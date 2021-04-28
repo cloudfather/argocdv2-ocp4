@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: argocd
+  namespace: argo
+spec:
+  server:
+    route:
+      enabled: true
+  rbac:
+    policy: 'g, cl-intadmins, role:admin'
+  dex:
+    openShiftOAuth: true
