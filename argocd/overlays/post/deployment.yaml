@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-argocd-dex-server
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    spec:
+      containers:
+      - command:
+        - /shared/argocd-dex
+        - rundex
+        image: quay.io/dexidp/dex@sha256:01e996b4b60edcc5cc042227c6965dd63ba68764c25d86b481b0d65f6e4da308
+        imagePullPolicy: Always
+        name: dex
+        ports:
+        - containerPort: 5556
+          name: http
+          protocol: TCP
+        - containerPort: 5557
+          name: grpc
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /shared
+          name: static-files
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - cp
+        - /usr/local/bin/argocd
+        - /shared/argocd-dex
+        image: quay.io/argoproj/argocd:v2.0.0
+        imagePullPolicy: Always
+        name: copyutil
+        resources: {}
