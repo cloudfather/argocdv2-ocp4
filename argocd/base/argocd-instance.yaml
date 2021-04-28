@@ -4,10 +4,12 @@ metadata:
   name: argocd
   namespace: argo
 spec:
+  dex:
+    openShiftOAuth: true
+  image: quay.io/argoproj/argocd
   server:
     route:
       enabled: true
+  version: v2.0.0
   rbac:
     policy: 'g, cl-intadmins, role:admin'
-  dex:
-    openShiftOAuth: true
